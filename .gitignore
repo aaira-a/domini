@@ -1,0 +1,6 @@
+*.pyc
+.coverage
+htmlcov/
+venv/
+domini.sublime-project
+domini.sublime-workspace
