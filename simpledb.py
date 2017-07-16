@@ -52,3 +52,10 @@ class SimpleDB(object):
             DomainName=domain_name,
             ItemName=item_name
         )
+
+    def query(self, domain_name, attribute_name, attribute_value):
+        expression = (f'select * from `{domain_name}` \
+                        where `{attribute_name}`="{attribute_value}"')
+        return self.client.select(
+            SelectExpression=expression,
+            ConsistentRead=True)

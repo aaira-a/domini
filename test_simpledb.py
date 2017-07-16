@@ -42,3 +42,23 @@ class SimpleDBIntegrationTestCase(unittest.TestCase):
         self.assertEqual(item2_attribute, "empty")
 
         self.sdb.delete_domain(domain)
+
+    def test_query_more_than_one_items_by_attribute_value(self):
+        domain = str(uuid.uuid4())
+        self.sdb.create_domain(domain)
+
+        item_1_name = str(uuid.uuid4())
+        item_2_name = str(uuid.uuid4())
+        item_3_name = str(uuid.uuid4())
+
+        value1 = {"Name": "attribute1name", "Value": "attribute1value1"}
+        value2 = {"Name": "attribute1name", "Value": "attribute1value2"}
+
+        self.sdb.put_attribute(domain, item_1_name, value1)
+        self.sdb.put_attribute(domain, item_2_name, value1)
+        self.sdb.put_attribute(domain, item_3_name, value2)
+
+        response = self.sdb.query(domain, "attribute1name", "attribute1value1")
+        self.assertEqual(2, len(response["Items"]))
+
+        self.sdb.delete_domain(domain)
