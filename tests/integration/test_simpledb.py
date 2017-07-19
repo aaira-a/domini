@@ -1,3 +1,4 @@
+from deepdiff import DeepDiff
 import os
 import unittest
 import uuid
@@ -30,16 +31,21 @@ class SimpleDBIntegrationTestCase(unittest.TestCase):
         item_name = str(uuid.uuid4())
         self.sdb.create_domain(domain)
 
-        attribute = {"Name": "attribute1name", "Value": "attribute1value"}
-        self.sdb.put_attribute(domain, item_name, attribute)
+        attributes = [
+            {"Name": "attribute1name", "Value": "attribute1value"},
+            {"Name": "attribute2name", "Value": "attribute2value"}
+        ]
+        self.sdb.put_attributes(domain, item_name, attributes)
 
         item = self.sdb.get_item(domain, item_name)
-        self.assertDictEqual(attribute, item["Attributes"][0])
+        difference = DeepDiff(attributes, item["Attributes"],
+                              ignore_order=True)
+        self.assertEqual({}, difference)
 
         self.sdb.delete_item(domain, item_name)
-        item2 = self.sdb.get_item(domain, item_name)
-        item2_attribute = item2.get("Attributes", "empty")
-        self.assertEqual(item2_attribute, "empty")
+        item_recheck = self.sdb.get_item(domain, item_name)
+        if "Attributes" in item_recheck:
+            self.fail("item should not contain any attribute")
 
         self.sdb.delete_domain(domain)
 
@@ -54,9 +60,9 @@ class SimpleDBIntegrationTestCase(unittest.TestCase):
         value1 = {"Name": "attribute1name", "Value": "attribute1value1"}
         value2 = {"Name": "attribute1name", "Value": "attribute1value2"}
 
-        self.sdb.put_attribute(domain, item_1_name, value1)
-        self.sdb.put_attribute(domain, item_2_name, value1)
-        self.sdb.put_attribute(domain, item_3_name, value2)
+        self.sdb.put_attributes(domain, item_1_name, [value1])
+        self.sdb.put_attributes(domain, item_2_name, [value1])
+        self.sdb.put_attributes(domain, item_3_name, [value2])
 
         response = self.sdb.query(domain, "attribute1name", "attribute1value1")
         self.assertEqual(2, len(response["Items"]))

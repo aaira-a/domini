@@ -27,16 +27,16 @@ class SimpleDB(object):
     def list_domains(self):
         return self.client.list_domains()
 
-    def put_attribute(self, domain_name, item_name, attribute):
+    def put_attributes(self, domain_name, item_name, attributes):
         return self.client.put_attributes(
             DomainName=domain_name,
             ItemName=item_name,
             Attributes=[
                 {
-                    "Name": attribute["Name"],
-                    "Value": attribute["Value"],
+                    "Name": x["Name"],
+                    "Value": x["Value"],
                     "Replace": True
-                }
+                } for x in attributes
             ]
         )
 
