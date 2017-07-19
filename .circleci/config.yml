@@ -29,7 +29,13 @@ jobs:
           key: v1-dependencies-{{ checksum "requirements.txt" }}
         
       - run:
-          name: run tests
+          name: run unit tests
           command: |
             . venv/bin/activate
-            python -m unittest
+            python -m pytest tests/unit
+
+      - run:
+          name: run integration tests
+          command: |
+            . venv/bin/activate
+            python -m pytest tests/integration
