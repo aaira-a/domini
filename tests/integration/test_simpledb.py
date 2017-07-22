@@ -6,7 +6,7 @@ import uuid
 from simpledb import SimpleDB
 
 
-class SimpleDBIntegrationTestCase(unittest.TestCase):
+class SimpleDBIntegrationTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):

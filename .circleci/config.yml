@@ -32,10 +32,10 @@ jobs:
           name: run unit tests
           command: |
             . venv/bin/activate
-            python -m pytest tests/unit
+            python -m pytest -v tests/unit
 
       - run:
           name: run integration tests
           command: |
             . venv/bin/activate
-            python -m pytest tests/integration
+            python -m pytest -v tests/integration

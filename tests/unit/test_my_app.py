@@ -2,7 +2,7 @@ import unittest
 from my_app import app
 
 
-class AppTestCase(unittest.TestCase):
+class AppTests(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
