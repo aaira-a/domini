@@ -19,3 +19,10 @@ class Item(object):
         except Exception as e:
             self.latest_call = ("failed: " + str(e))
             self.failed_count += 1
+
+    def extract_status(self):
+        try:
+            self.status = self.latest_call.json["Status"]
+        except Exception:
+            self.status = "error"
+            self.failed_count += 1

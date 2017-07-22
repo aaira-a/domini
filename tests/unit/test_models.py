@@ -55,3 +55,22 @@ class ItemTests(unittest.TestCase):
 
         self.item.fetch_from_provider()
         self.assertEqual(2, self.item.failed_count)
+
+    def test_extract_response_with_valid_data(self):
+        self.item.latest_call = requests.Response()
+        self.item.latest_call.json = {"k1": "abc", "Status": "PC", "k3": "def"}
+
+        self.item.extract_status()
+
+        self.assertEqual("PC", self.item.status)
+
+    def test_extract_response_with_invalid_data(self):
+        self.item.latest_call = requests.Response()
+        self.item.latest_call.json = {"k1": "abc", "err": "PC", "k3": "def"}
+
+        self.item.extract_status()
+        self.assertEqual("error", self.item.status)
+        self.assertEqual(1, self.item.failed_count)
+
+        self.item.extract_status()
+        self.assertEqual(2, self.item.failed_count)
