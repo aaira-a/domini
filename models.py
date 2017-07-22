@@ -1,16 +1,20 @@
+import uuid
+
 import requests
 
 
 class Item(object):
 
-    def __init__(self, url, token, is_existing=False, failed_count=0):
+    def __init__(self, url, token, is_existing=False, failed_count=0, id_=None):
         self.url = url
         self.token = token
         self.failed_count = failed_count
+        self.id = id_
 
         if not is_existing:
             self.is_active = True
             self.failed_count = 0
+            self.id = str(uuid.uuid4())
 
     def fetch_from_provider(self):
         try:

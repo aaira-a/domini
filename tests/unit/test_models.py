@@ -1,4 +1,5 @@
 import unittest
+from uuid import UUID
 
 import requests
 import responses
@@ -23,6 +24,7 @@ class ItemTests(unittest.TestCase):
         self.assertEqual(token, self.item.token)
         self.assertTrue(self.item.is_active)
         self.assertEqual(0, self.item.failed_count)
+        self.assertTrue(UUID(str(self.item.id)))
 
     @responses.activate
     def test_fetch_from_provider_with_correct_format(self):
