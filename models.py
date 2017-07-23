@@ -2,6 +2,11 @@ import uuid
 
 import requests
 
+import simpledb as db
+
+
+DEFAULT_DOMAIN = "domini-items"
+
 
 class Item(object):
 
@@ -12,7 +17,7 @@ class Item(object):
         self.id = id_
 
         if not is_existing:
-            self.is_active = True
+            self.is_active = "YES"
             self.failed_count = 0
             self.id = str(uuid.uuid4())
 
@@ -30,3 +35,15 @@ class Item(object):
         except Exception:
             self.status = "error"
             self.failed_count += 1
+
+    def save(self, fields, db=db, domain=DEFAULT_DOMAIN):
+        attributes = []
+        for field in fields:
+            attributes.append(
+                {"Name": field, "Value": str(getattr(self, field))})
+
+        db.put_attributes(
+            domain_name=domain,
+            item_name=self.id,
+            attributes=attributes,
+        )

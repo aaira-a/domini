@@ -1,10 +1,12 @@
 import unittest
-from uuid import UUID
+import uuid
 
 import requests
 import responses
 
 from models import Item
+
+TEST_DEFAULT_DOMAIN = "test-default-domain-345"
 
 
 class ItemTests(unittest.TestCase):
@@ -22,9 +24,9 @@ class ItemTests(unittest.TestCase):
 
         self.assertEqual(url, self.item.url)
         self.assertEqual(token, self.item.token)
-        self.assertTrue(self.item.is_active)
+        self.assertEqual("YES", self.item.is_active)
         self.assertEqual(0, self.item.failed_count)
-        self.assertTrue(UUID(str(self.item.id)))
+        self.assertTrue(uuid.UUID(str(self.item.id)))
 
     @responses.activate
     def test_fetch_from_provider_with_correct_format(self):
@@ -76,3 +78,22 @@ class ItemTests(unittest.TestCase):
 
         self.item.extract_status()
         self.assertEqual(2, self.item.failed_count)
+
+    def test_save_item_for_initial_creation(self):
+        self.item.id = str(uuid.uuid4())
+        fields = ["url", "token", "failed_count", "is_active"]
+
+        attributes = [
+            {"Name": "url", "Value": self.item.url},
+            {"Name": "token", "Value": self.item.token},
+            {"Name": "failed_count", "Value": str(self.item.failed_count)},
+            {"Name": "is_active", "Value": str(self.item.is_active)},
+        ]
+
+        mock_db = unittest.mock.Mock()
+        self.item.save(fields, mock_db, domain=TEST_DEFAULT_DOMAIN)
+
+        mock_db.put_attributes.assert_called_once_with(
+            domain_name=TEST_DEFAULT_DOMAIN,
+            item_name=str(self.item.id),
+            attributes=attributes)
