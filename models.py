@@ -39,7 +39,8 @@ class Item(object):
             attributes.append(
                 {"Name": field, "Value": str(getattr(self, field))})
 
-        db.put_attributes(
+        db_instance = db.SimpleDB()
+        db_instance.put_attributes(
             item_name=self.id,
             attributes=attributes,
         )

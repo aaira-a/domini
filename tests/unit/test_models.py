@@ -91,6 +91,7 @@ class ItemTests(unittest.TestCase):
         mock_db = unittest.mock.Mock()
         self.item.save(fields, mock_db)
 
-        mock_db.put_attributes.assert_called_once_with(
+        mock_db.SimpleDB.assert_called_once()
+        mock_db.SimpleDB().put_attributes.assert_called_once_with(
             item_name=str(self.item.id),
             attributes=attributes)
