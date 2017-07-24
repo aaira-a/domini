@@ -2,6 +2,9 @@ import boto3
 import os
 
 
+DOMAIN = "domini-items"
+
+
 class SimpleDB(object):
 
     def __init__(self, region='us-west-2',
@@ -14,12 +17,12 @@ class SimpleDB(object):
             region_name=region
         )
 
-    def create_domain(self, domain_name):
+    def create_domain(self, domain_name=DOMAIN):
         return self.client.create_domain(
             DomainName=domain_name
         )
 
-    def delete_domain(self, domain_name):
+    def delete_domain(self, domain_name=DOMAIN):
         return self.client.delete_domain(
             DomainName=domain_name
         )
@@ -27,7 +30,7 @@ class SimpleDB(object):
     def list_domains(self):
         return self.client.list_domains()
 
-    def put_attributes(self, domain_name, item_name, attributes):
+    def put_attributes(self, item_name, attributes, domain_name=DOMAIN):
         return self.client.put_attributes(
             DomainName=domain_name,
             ItemName=item_name,
@@ -40,20 +43,20 @@ class SimpleDB(object):
             ]
         )
 
-    def get_item(self, domain_name, item_name):
+    def get_item(self, item_name, domain_name=DOMAIN):
         return self.client.get_attributes(
             DomainName=domain_name,
             ItemName=item_name,
             ConsistentRead=True
         )
 
-    def delete_item(self, domain_name, item_name):
+    def delete_item(self, item_name, domain_name=DOMAIN):
         return self.client.delete_attributes(
             DomainName=domain_name,
             ItemName=item_name
         )
 
-    def query(self, domain_name, attribute_name, attribute_value):
+    def query(self, attribute_name, attribute_value, domain_name=DOMAIN):
         expression = (f'select * from `{domain_name}` \
                         where `{attribute_name}`="{attribute_value}"')
         return self.client.select(

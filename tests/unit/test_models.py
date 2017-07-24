@@ -6,8 +6,6 @@ import responses
 
 from models import Item
 
-TEST_DEFAULT_DOMAIN = "test-default-domain-345"
-
 
 class ItemTests(unittest.TestCase):
 
@@ -91,9 +89,8 @@ class ItemTests(unittest.TestCase):
         ]
 
         mock_db = unittest.mock.Mock()
-        self.item.save(fields, mock_db, domain=TEST_DEFAULT_DOMAIN)
+        self.item.save(fields, mock_db)
 
         mock_db.put_attributes.assert_called_once_with(
-            domain_name=TEST_DEFAULT_DOMAIN,
             item_name=str(self.item.id),
             attributes=attributes)

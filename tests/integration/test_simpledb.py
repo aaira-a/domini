@@ -35,15 +35,15 @@ class SimpleDBIntegrationTests(unittest.TestCase):
             {"Name": "attribute1name", "Value": "attribute1value"},
             {"Name": "attribute2name", "Value": "attribute2value"}
         ]
-        self.sdb.put_attributes(domain, item_name, attributes)
+        self.sdb.put_attributes(item_name, attributes, domain)
 
-        item = self.sdb.get_item(domain, item_name)
+        item = self.sdb.get_item(item_name, domain)
         difference = DeepDiff(attributes, item["Attributes"],
                               ignore_order=True)
         self.assertEqual({}, difference)
 
-        self.sdb.delete_item(domain, item_name)
-        item_recheck = self.sdb.get_item(domain, item_name)
+        self.sdb.delete_item(item_name, domain)
+        item_recheck = self.sdb.get_item(item_name, domain)
         if "Attributes" in item_recheck:
             self.fail("item should not contain any attribute")
 
@@ -60,11 +60,11 @@ class SimpleDBIntegrationTests(unittest.TestCase):
         value1 = {"Name": "attribute1name", "Value": "attribute1value1"}
         value2 = {"Name": "attribute1name", "Value": "attribute1value2"}
 
-        self.sdb.put_attributes(domain, item_1_name, [value1])
-        self.sdb.put_attributes(domain, item_2_name, [value1])
-        self.sdb.put_attributes(domain, item_3_name, [value2])
+        self.sdb.put_attributes(item_1_name, [value1], domain)
+        self.sdb.put_attributes(item_2_name, [value1], domain)
+        self.sdb.put_attributes(item_3_name, [value2], domain)
 
-        response = self.sdb.query(domain, "attribute1name", "attribute1value1")
+        response = self.sdb.query("attribute1name", "attribute1value1", domain)
         self.assertEqual(2, len(response["Items"]))
 
         self.sdb.delete_domain(domain)

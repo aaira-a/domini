@@ -5,9 +5,6 @@ import requests
 import simpledb as db
 
 
-DEFAULT_DOMAIN = "domini-items"
-
-
 class Item(object):
 
     def __init__(self, url, token, is_existing=False, failed_count=0, id_=None):
@@ -36,14 +33,13 @@ class Item(object):
             self.status = "error"
             self.failed_count += 1
 
-    def save(self, fields, db=db, domain=DEFAULT_DOMAIN):
+    def save(self, fields, db=db):
         attributes = []
         for field in fields:
             attributes.append(
                 {"Name": field, "Value": str(getattr(self, field))})
 
         db.put_attributes(
-            domain_name=domain,
             item_name=self.id,
             attributes=attributes,
         )
