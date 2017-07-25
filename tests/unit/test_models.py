@@ -12,9 +12,10 @@ class ItemTests(unittest.TestCase):
     def setUp(self):
         url = "https://abc/def/ghi?jkl=mno"
         token = "Bearer xyz"
+        self.mock_db = unittest.mock.Mock()
 
         self.headers = {"Authorization": token}
-        self.item = Item(url, token)
+        self.item = Item(url, token, self.mock_db)
 
     def test_initialize_model_fields_with_for_first_time(self):
         url = "https://abc/def/ghi?jkl=mno"
@@ -22,6 +23,7 @@ class ItemTests(unittest.TestCase):
 
         self.assertEqual(url, self.item.url)
         self.assertEqual(token, self.item.token)
+        self.assertEqual(self.mock_db, self.item.db)
         self.assertEqual("YES", self.item.is_active)
         self.assertEqual(0, self.item.failed_count)
         self.assertTrue(uuid.UUID(str(self.item.id)))
@@ -88,10 +90,8 @@ class ItemTests(unittest.TestCase):
             {"Name": "is_active", "Value": str(self.item.is_active)},
         ]
 
-        mock_db = unittest.mock.Mock()
-        self.item.save(fields, mock_db)
+        self.item.save(fields)
 
-        mock_db.SimpleDB.assert_called_once()
-        mock_db.SimpleDB().put_attributes.assert_called_once_with(
+        self.item.db.put_attributes.assert_called_once_with(
             item_name=str(self.item.id),
             attributes=attributes)

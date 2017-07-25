@@ -6,12 +6,12 @@ import simpledb as db
 
 class ItemController(object):
 
-    @staticmethod
-    def add(url, token):
-        item = Item(url, token)
+    def __init__(self, db=db):
+        self.db = db.SimpleDB()
+
+    def add(self, url, token):
+        item = Item(url, token, self.db)
         item.save(fields=["url", "token", "failed_count", "is_active"])
 
-    @staticmethod
-    def get_active_items():
-        db_instance = db.SimpleDB()
-        return db_instance.query("is_active", "YES")
+    def get_active_items(self):
+        return self.db.query("is_active", "YES")

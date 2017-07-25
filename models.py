@@ -2,16 +2,16 @@ import uuid
 
 import requests
 
-import simpledb as db
-
 
 class Item(object):
 
-    def __init__(self, url, token, is_existing=False, failed_count=0, id_=None):
+    def __init__(self, url, token, db,
+                 is_existing=False, failed_count=0, id_=None):
         self.url = url
         self.token = token
         self.failed_count = failed_count
         self.id = id_
+        self.db = db
 
         if not is_existing:
             self.is_active = "YES"
@@ -33,14 +33,13 @@ class Item(object):
             self.status = "error"
             self.failed_count += 1
 
-    def save(self, fields, db=db):
+    def save(self, fields):
         attributes = []
         for field in fields:
             attributes.append(
                 {"Name": field, "Value": str(getattr(self, field))})
 
-        db_instance = db.SimpleDB()
-        db_instance.put_attributes(
+        self.db.put_attributes(
             item_name=self.id,
             attributes=attributes,
         )
