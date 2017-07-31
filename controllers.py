@@ -8,6 +8,7 @@ class ItemController(object):
 
     def __init__(self, db=db):
         self.db = db.SimpleDB()
+        self.db.create_domain()
 
     def add(self, url, token):
         item = Item(url, token, self.db)

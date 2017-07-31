@@ -17,6 +17,7 @@ class ItemControllerTests(unittest.TestCase):
     def test_controller_init_should_instantiate_db(self):
         self.mock_db_module.SimpleDB.assert_called_once()
         self.assertEqual(self.controller.db, self.mock_db_instance)
+        self.mock_db_instance.create_domain.assert_called_once()
 
     @patch('controllers.Item')
     def test_add_item_saves_correct_fields_to_model(self, mock_Item):
@@ -34,7 +35,7 @@ class ItemControllerTests(unittest.TestCase):
         self.controller.get_active_items()
         self.mock_db_instance.query.assert_called_once_with("is_active", "YES")
 
-    def test_get_active_items_hydrated_db_query_into_model(self):
+    def test_get_active_items_hydrates_db_query_into_model(self):
         self.mock_db_instance.query.return_value = mock_results
 
         items = self.controller.get_active_items()
