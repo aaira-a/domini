@@ -12,10 +12,11 @@ class ItemTests(unittest.TestCase):
     def setUp(self):
         url = "https://abc/def/ghi?jkl=mno"
         token = "Bearer xyz"
+        phone = "+0123"
         self.mock_db = unittest.mock.Mock()
 
         self.headers = {"Authorization": token}
-        self.item = Item(url, token, self.mock_db)
+        self.item = Item(url, token, phone, self.mock_db)
 
     def test_initialize_model_fields_with_for_first_time(self):
         url = "https://abc/def/ghi?jkl=mno"
@@ -23,6 +24,7 @@ class ItemTests(unittest.TestCase):
 
         self.assertEqual(url, self.item.url)
         self.assertEqual(token, self.item.token)
+        self.assertEqual("+0123", self.item.phone)
         self.assertEqual(self.mock_db, self.item.db)
         self.assertEqual("YES", self.item.is_active)
         self.assertEqual(0, self.item.failed_count)
@@ -81,11 +83,12 @@ class ItemTests(unittest.TestCase):
 
     def test_save_item_for_initial_creation(self):
         self.item.id = str(uuid.uuid4())
-        fields = ["url", "token", "failed_count", "is_active"]
+        fields = ["url", "token", "phone", "failed_count", "is_active"]
 
         attributes = [
             {"Name": "url", "Value": self.item.url},
             {"Name": "token", "Value": self.item.token},
+            {"Name": "phone", "Value": self.item.phone},
             {"Name": "failed_count", "Value": str(self.item.failed_count)},
             {"Name": "is_active", "Value": str(self.item.is_active)},
         ]

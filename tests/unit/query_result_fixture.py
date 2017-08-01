@@ -13,6 +13,9 @@ results = {
         }, {
             'Name': 'token',
             'Value': 'token1'
+        }, {
+            'Name': 'phone',
+            'Value': '+0123'
         }]
     }, {
         'Name': '9ac48b02-e125-4a4c-a67b-582cf87f9345',
@@ -28,6 +31,9 @@ results = {
         }, {
             'Name': 'token',
             'Value': 'token3'
+        }, {
+            'Name': 'phone',
+            'Value': '+3210'
         }]
     }],
     'ResponseMetadata': {

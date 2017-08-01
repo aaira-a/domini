@@ -5,10 +5,11 @@ import requests
 
 class Item(object):
 
-    def __init__(self, url, token, db,
+    def __init__(self, url, token, phone, db,
                  is_existing=False, failed_count=0, id_=None):
         self.url = url
         self.token = token
+        self.phone = phone
         self.failed_count = failed_count
         self.id = id_
         self.db = db

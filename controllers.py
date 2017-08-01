@@ -23,6 +23,7 @@ class ItemController(object):
                 id_=result["Name"],
                 url=self.get_attribute("url", result["Attributes"]),
                 token=self.get_attribute("token", result["Attributes"]),
+                phone=self.get_attribute("phone", result["Attributes"]),
                 failed_count=int(
                     self.get_attribute("failed_count", result["Attributes"])
                 ),

@@ -45,6 +45,7 @@ class ItemControllerTests(unittest.TestCase):
             id_="cd8aafae-47ad-4abf-8d51-ca51912e1936",
             url="url1",
             token="token1",
+            phone="+0123",
             failed_count=3,
             db=self.mock_db_instance)
 
@@ -53,6 +54,7 @@ class ItemControllerTests(unittest.TestCase):
             id_="9ac48b02-e125-4a4c-a67b-582cf87f9345",
             url="url3",
             token="token3",
+            phone="+3210",
             failed_count=1,
             db=self.mock_db_instance)
 
@@ -61,9 +63,11 @@ class ItemControllerTests(unittest.TestCase):
         self.assertEqual(expected_object_1.id, items[0].id)
         self.assertEqual(expected_object_1.url, items[0].url)
         self.assertEqual(expected_object_1.token, items[0].token)
+        self.assertEqual(expected_object_1.phone, items[0].phone)
         self.assertEqual(expected_object_1.failed_count, items[0].failed_count)
 
         self.assertEqual(expected_object_2.id, items[1].id)
         self.assertEqual(expected_object_2.url, items[1].url)
         self.assertEqual(expected_object_2.token, items[1].token)
+        self.assertEqual(expected_object_2.phone, items[1].phone)
         self.assertEqual(expected_object_2.failed_count, items[1].failed_count)
