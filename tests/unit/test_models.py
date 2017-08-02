@@ -85,3 +85,9 @@ class ItemTests(unittest.TestCase):
         self.item.db.put_attributes.assert_called_once_with(
             item_name=str(self.item.id),
             attributes=attributes)
+
+    def test_increment_error_count(self):
+        self.assertEqual(0, self.item.failed_count)
+        self.item.increment_failed_count()
+        self.item.increment_failed_count()
+        self.assertEqual(2, self.item.failed_count)

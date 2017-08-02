@@ -1,14 +1,16 @@
 
 from models import Item
 
+import messaging
 import simpledb as db
 
 
 class ItemController(object):
 
-    def __init__(self, db=db):
+    def __init__(self, db=db, messenger=messaging):
         self.db = db.SimpleDB()
         self.db.create_domain()
+        self.messenger = messenger.TwilioClient()
 
     def add(self, url, token):
         item = Item(url, token, self.db)
@@ -37,3 +39,15 @@ class ItemController(object):
         for attribute in attributes:
             if attribute["Name"] == attribute_name:
                 return attribute["Value"]
+
+    def process_items(self, items):
+        try:
+            for item in items:
+                status = item.fetch_status_from_provider()
+                if "error" in status:
+                    item.increment_failed_count()
+                elif "DL" in status:
+                    self.messenger.send_message(
+                        "your item is out for delivery now", item.phone)
+        except Exception:
+            pass

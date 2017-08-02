@@ -12,12 +12,23 @@ class ItemControllerTests(unittest.TestCase):
         self.mock_db_instance = unittest.mock.MagicMock()
         self.mock_db_module = unittest.mock.Mock()
         self.mock_db_module.SimpleDB.return_value = self.mock_db_instance
-        self.controller = controllers.ItemController(self.mock_db_module)
+
+        self.mock_messenger_instance = unittest.mock.MagicMock()
+        self.mock_messenger_module = unittest.mock.Mock()
+        self.mock_messenger_module.TwilioClient.return_value = self.mock_messenger_instance
+
+        self.controller = controllers.ItemController(
+            self.mock_db_module, self.mock_messenger_module)
 
     def test_controller_init_should_instantiate_db(self):
         self.mock_db_module.SimpleDB.assert_called_once()
         self.assertEqual(self.controller.db, self.mock_db_instance)
         self.mock_db_instance.create_domain.assert_called_once()
+
+    def test_controller_init_should_instantiate_messenger(self):
+        self.mock_messenger_module.TwilioClient.assert_called_once()
+        self.assertEqual(self.controller.messenger,
+                         self.mock_messenger_instance)
 
     @patch('controllers.Item')
     def test_add_item_saves_correct_fields_to_model(self, mock_Item):
@@ -71,3 +82,46 @@ class ItemControllerTests(unittest.TestCase):
         self.assertEqual(expected_object_2.token, items[1].token)
         self.assertEqual(expected_object_2.phone, items[1].phone)
         self.assertEqual(expected_object_2.failed_count, items[1].failed_count)
+
+    def test_process_items_calls_models_fetch_method(self):
+        mock_item = unittest.mock.MagicMock()
+        self.controller.process_items([mock_item])
+        mock_item.fetch_status_from_provider.assert_called_once()
+
+    def test_process_items_increments_failed_count_for_fetch_errors(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "error"
+
+        self.controller.process_items([mock_item])
+        mock_item.increment_failed_count.assert_called_once()
+
+    def test_process_items_do_not_send_message_if_status_is_error(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "error"
+        self.controller.process_items([mock_item])
+
+        self.mock_messenger_instance.send_message.assert_not_called()
+
+    def test_process_items_sends_message_if_status_is_DL(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "DL"
+        mock_item.phone = "+0123"
+
+        self.controller.process_items([mock_item])
+
+        self.mock_messenger_instance.send_message.assert_called_once_with(
+            "your item is out for delivery now", mock_item.phone)
+
+    def test_process_items_do_not_send_message_if_status_is_other(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.controller.process_items([mock_item])
+
+        self.mock_messenger_instance.send_message.assert_not_called()
+
+    def test_process_items_do_not_increment_failed_count_other_status(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "randomstring"
+
+        self.controller.process_items([mock_item])
+        mock_item.increment_failed_count.assert_not_called()

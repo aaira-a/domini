@@ -37,3 +37,6 @@ class Item(object):
             item_name=self.id,
             attributes=attributes,
         )
+
+    def increment_failed_count(self):
+        self.failed_count += 1
