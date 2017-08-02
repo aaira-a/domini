@@ -19,20 +19,13 @@ class Item(object):
             self.failed_count = 0
             self.id = str(uuid.uuid4())
 
-    def fetch_from_provider(self):
+    def fetch_status_from_provider(self):
         try:
             headers = {"Authorization": self.token}
-            self.latest_call = requests.get(self.url, headers=headers)
+            response = requests.get(self.url, headers=headers)
+            return response.json()["Status"]
         except Exception as e:
-            self.latest_call = ("failed: " + str(e))
-            self.failed_count += 1
-
-    def extract_status(self):
-        try:
-            self.status = self.latest_call.json["Status"]
-        except Exception:
-            self.status = "error"
-            self.failed_count += 1
+            return "error"
 
     def save(self, fields):
         attributes = []

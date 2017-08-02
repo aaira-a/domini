@@ -35,51 +35,38 @@ class ItemTests(unittest.TestCase):
         responses.add(responses.GET, self.item.url,
                       adding_headers=self.headers, match_querystring=True)
 
-        self.item.fetch_from_provider()
+        self.item.fetch_status_from_provider()
 
         request = responses.calls[0].request
         self.assertEqual(self.item.url, request.url)
         self.assertDictContainsSubset(self.headers, request.headers)
 
     @responses.activate
-    def test_successful_fetch_from_provider_should_set_field(self):
+    def test_successful_fetch_from_provider_should_return_status(self):
         responses.add(responses.GET, self.item.url,
+                      json={"k1": "abc", "Status": "PC", "k3": "def"},
                       adding_headers=self.headers, match_querystring=True)
 
-        self.item.fetch_from_provider()
-        self.assertEqual(requests.models.Response, type(self.item.latest_call))
+        status = self.item.fetch_status_from_provider()
+        self.assertEqual("PC", status)
 
     @responses.activate
-    def test_unsuccessful_fetch_from_provider_should_set_field(self):
+    def test_unsuccessful_fetch_from_provider_should_return_error(self):
+        responses.add(responses.GET, self.item.url,
+                      json={"k1": "abc", "err": "PC", "k3": "def"},
+                      adding_headers=self.headers, match_querystring=True)
+
+        status = self.item.fetch_status_from_provider()
+        self.assertEqual("error", status)
+
+    @responses.activate
+    def test_connection_error_fetch_from_provider_should_return_error(self):
         responses.add(responses.GET, self.item.url,
                       adding_headers=self.headers, match_querystring=True,
                       body=requests.exceptions.ConnectionError)
 
-        self.item.fetch_from_provider()
-        self.assertIn("failed", self.item.latest_call)
-        self.assertEqual(1, self.item.failed_count)
-
-        self.item.fetch_from_provider()
-        self.assertEqual(2, self.item.failed_count)
-
-    def test_extract_response_with_valid_data(self):
-        self.item.latest_call = requests.Response()
-        self.item.latest_call.json = {"k1": "abc", "Status": "PC", "k3": "def"}
-
-        self.item.extract_status()
-
-        self.assertEqual("PC", self.item.status)
-
-    def test_extract_response_with_invalid_data(self):
-        self.item.latest_call = requests.Response()
-        self.item.latest_call.json = {"k1": "abc", "err": "PC", "k3": "def"}
-
-        self.item.extract_status()
-        self.assertEqual("error", self.item.status)
-        self.assertEqual(1, self.item.failed_count)
-
-        self.item.extract_status()
-        self.assertEqual(2, self.item.failed_count)
+        status = self.item.fetch_status_from_provider()
+        self.assertEqual("error", status)
 
     def test_save_item_for_initial_creation(self):
         self.item.id = str(uuid.uuid4())
