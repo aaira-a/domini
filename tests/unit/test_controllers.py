@@ -136,6 +136,32 @@ class ItemControllerTests(unittest.TestCase):
         self.mock_messenger_instance.send_message.assert_called()
         self.assertEqual("NO", mock_item.is_active)
 
+    def test_process_items_does_not_set_item_to_inactive_in_other_status(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "randomstring"
+        mock_item.is_active = "YES"
+
+        self.controller.process_items([mock_item])
+        self.assertEqual("YES", mock_item.is_active)
+
+    def test_process_items_does_not_set_item_to_inactive_for_failed_count_4_(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "randomstring"
+        mock_item.is_active = "YES"
+        mock_item.failed_count = 4
+
+        self.controller.process_items([mock_item])
+        self.assertEqual("YES", mock_item.is_active)
+
+    def test_process_items_sets_item_to_inactive_for_failed_count_5_(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "randomstring"
+        mock_item.is_active = "YES"
+        mock_item.failed_count = 5
+
+        self.controller.process_items([mock_item])
+        self.assertEqual("NO", mock_item.is_active)
+
     def test_process_items_save_item_field_after_processing(self):
         mock_item = unittest.mock.MagicMock()
         self.controller.process_items([mock_item])

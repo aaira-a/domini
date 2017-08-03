@@ -48,13 +48,17 @@ class ItemController(object):
 
                 if "error" in status:
                     item.increment_failed_count()
-                elif "DL" in status:
+                if "DL" in status:
                     self.messenger.send_message(
                         "your item is out for delivery now", item.phone)
                     item.is_active = "NO"
 
-            item.save(
-                fields=["url", "token", "phone", "failed_count", "is_active"])
+                if item.is_active == "YES":
+                    if item.failed_count >= 5:
+                        item.is_active = "NO"
+
+                item.save(fields=["url", "token", "phone",
+                                  "failed_count", "is_active"])
 
         except Exception:
             pass
