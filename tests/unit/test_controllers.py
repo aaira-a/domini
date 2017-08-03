@@ -20,6 +20,8 @@ class ItemControllerTests(unittest.TestCase):
         self.controller = controllers.ItemController(
             self.mock_db_module, self.mock_messenger_module)
 
+        self.mock_item = unittest.mock.MagicMock()
+
     def test_controller_init_should_instantiate_db(self):
         self.mock_db_module.SimpleDB.assert_called_once()
         self.assertEqual(self.controller.db, self.mock_db_instance)
@@ -84,86 +86,71 @@ class ItemControllerTests(unittest.TestCase):
         self.assertEqual(expected_object_2.failed_count, items[1].failed_count)
 
     def test_process_items_calls_models_fetch_method(self):
-        mock_item = unittest.mock.MagicMock()
-        self.controller.process_items([mock_item])
-        mock_item.fetch_status_from_provider.assert_called_once()
+        self.controller.process_items([self.mock_item])
+        self.mock_item.fetch_status_from_provider.assert_called_once()
 
     def test_process_items_increments_failed_count_for_fetch_errors(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "error"
-
-        self.controller.process_items([mock_item])
-        mock_item.increment_failed_count.assert_called_once()
+        self.mock_item.fetch_status_from_provider.return_value = "error"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.increment_failed_count.assert_called_once()
 
     def test_process_items_do_not_send_message_if_status_is_error(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "error"
-        self.controller.process_items([mock_item])
-
+        self.mock_item.fetch_status_from_provider.return_value = "error"
+        self.controller.process_items([self.mock_item])
         self.mock_messenger_instance.send_message.assert_not_called()
 
     def test_process_items_sends_message_if_status_is_DL(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "DL"
-        mock_item.phone = "+0123"
+        self.mock_item.fetch_status_from_provider.return_value = "DL"
+        self.mock_item.phone = "+0123"
 
-        self.controller.process_items([mock_item])
+        self.controller.process_items([self.mock_item])
 
         self.mock_messenger_instance.send_message.assert_called_once_with(
-            "your item is out for delivery now", mock_item.phone)
+            "your item is out for delivery now", self.mock_item.phone)
 
     def test_process_items_does_not_send_message_if_status_is_other(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "randomstring"
-        self.controller.process_items([mock_item])
-
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.controller.process_items([self.mock_item])
         self.mock_messenger_instance.send_message.assert_not_called()
 
     def test_process_items_does_not_increment_failed_count_other_status(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "randomstring"
-
-        self.controller.process_items([mock_item])
-        mock_item.increment_failed_count.assert_not_called()
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.increment_failed_count.assert_not_called()
 
     def test_process_items_sets_item_to_inactive_in_sending_msg_for_DL(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "DL"
-        mock_item.is_active = "YES"
+        self.mock_item.fetch_status_from_provider.return_value = "DL"
+        self.mock_item.is_active = "YES"
 
-        self.controller.process_items([mock_item])
+        self.controller.process_items([self.mock_item])
 
         self.mock_messenger_instance.send_message.assert_called()
-        self.assertEqual("NO", mock_item.is_active)
+        self.assertEqual("NO", self.mock_item.is_active)
 
     def test_process_items_does_not_set_item_to_inactive_in_other_status(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "randomstring"
-        mock_item.is_active = "YES"
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.mock_item.is_active = "YES"
 
-        self.controller.process_items([mock_item])
-        self.assertEqual("YES", mock_item.is_active)
+        self.controller.process_items([self.mock_item])
+        self.assertEqual("YES", self.mock_item.is_active)
 
     def test_process_items_does_not_set_item_to_inactive_for_failed_count_4_(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "randomstring"
-        mock_item.is_active = "YES"
-        mock_item.failed_count = 4
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.mock_item.is_active = "YES"
+        self.mock_item.failed_count = 4
 
-        self.controller.process_items([mock_item])
-        self.assertEqual("YES", mock_item.is_active)
+        self.controller.process_items([self.mock_item])
+        self.assertEqual("YES", self.mock_item.is_active)
 
     def test_process_items_sets_item_to_inactive_for_failed_count_5_(self):
-        mock_item = unittest.mock.MagicMock()
-        mock_item.fetch_status_from_provider.return_value = "randomstring"
-        mock_item.is_active = "YES"
-        mock_item.failed_count = 5
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.mock_item.is_active = "YES"
+        self.mock_item.failed_count = 5
 
-        self.controller.process_items([mock_item])
-        self.assertEqual("NO", mock_item.is_active)
+        self.controller.process_items([self.mock_item])
+        self.assertEqual("NO", self.mock_item.is_active)
 
     def test_process_items_save_item_field_after_processing(self):
-        mock_item = unittest.mock.MagicMock()
-        self.controller.process_items([mock_item])
-        mock_item.save.assert_called_with(
+        self.controller.process_items([self.mock_item])
+        self.mock_item.save.assert_called_with(
             fields=["url", "token", "phone", "failed_count", "is_active"])
