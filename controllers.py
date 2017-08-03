@@ -14,7 +14,8 @@ class ItemController(object):
 
     def add(self, url, token):
         item = Item(url, token, self.db)
-        item.save(fields=["url", "token", "failed_count", "is_active"])
+        item.save(
+            fields=["url", "token", "phone", "failed_count", "is_active"])
 
     def get_active_items(self):
         results = self.db.query("is_active", "YES")

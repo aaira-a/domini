@@ -40,7 +40,7 @@ class ItemControllerTests(unittest.TestCase):
         mock_Item.assert_called_with(self.url, self.token,
                                      self.mock_db_instance)
         mock_Item().save.assert_called_with(
-            fields=["url", "token", "failed_count", "is_active"])
+            fields=["url", "token", "phone", "failed_count", "is_active"])
 
     def test_get_active_items_queries_db_with_correct_format(self):
         self.controller.get_active_items()
