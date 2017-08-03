@@ -112,16 +112,32 @@ class ItemControllerTests(unittest.TestCase):
         self.mock_messenger_instance.send_message.assert_called_once_with(
             "your item is out for delivery now", mock_item.phone)
 
-    def test_process_items_do_not_send_message_if_status_is_other(self):
+    def test_process_items_does_not_send_message_if_status_is_other(self):
         mock_item = unittest.mock.MagicMock()
         mock_item.fetch_status_from_provider.return_value = "randomstring"
         self.controller.process_items([mock_item])
 
         self.mock_messenger_instance.send_message.assert_not_called()
 
-    def test_process_items_do_not_increment_failed_count_other_status(self):
+    def test_process_items_does_not_increment_failed_count_other_status(self):
         mock_item = unittest.mock.MagicMock()
         mock_item.fetch_status_from_provider.return_value = "randomstring"
 
         self.controller.process_items([mock_item])
         mock_item.increment_failed_count.assert_not_called()
+
+    def test_process_items_sets_item_to_inactive_in_sending_msg_for_DL(self):
+        mock_item = unittest.mock.MagicMock()
+        mock_item.fetch_status_from_provider.return_value = "DL"
+        mock_item.is_active = "YES"
+
+        self.controller.process_items([mock_item])
+
+        self.mock_messenger_instance.send_message.assert_called()
+        self.assertEqual("NO", mock_item.is_active)
+
+    def test_process_items_save_item_field_after_processing(self):
+        mock_item = unittest.mock.MagicMock()
+        self.controller.process_items([mock_item])
+        mock_item.save.assert_called_with(
+            fields=["url", "token", "phone", "failed_count", "is_active"])

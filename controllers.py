@@ -45,10 +45,16 @@ class ItemController(object):
         try:
             for item in items:
                 status = item.fetch_status_from_provider()
+
                 if "error" in status:
                     item.increment_failed_count()
                 elif "DL" in status:
                     self.messenger.send_message(
                         "your item is out for delivery now", item.phone)
+                    item.is_active = "NO"
+
+            item.save(
+                fields=["url", "token", "phone", "failed_count", "is_active"])
+
         except Exception:
             pass

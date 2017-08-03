@@ -18,7 +18,7 @@ class ItemTests(unittest.TestCase):
         self.headers = {"Authorization": token}
         self.item = Item(url, token, phone, self.mock_db)
 
-    def test_initialize_model_fields_with_for_first_time(self):
+    def test_initialize_model_fields_for_first_time(self):
         url = "https://abc/def/ghi?jkl=mno"
         token = "Bearer xyz"
 
