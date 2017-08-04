@@ -89,17 +89,32 @@ class ItemControllerTests(unittest.TestCase):
         self.controller.process_items([self.mock_item])
         self.mock_item.fetch_status_from_provider.assert_called_once()
 
-    def test_process_items_increments_failed_count_for_fetch_errors(self):
+    def test_process_items_increments_failed_count_for_fetch_error(self):
         self.mock_item.fetch_status_from_provider.return_value = "error"
         self.controller.process_items([self.mock_item])
         self.mock_item.increment_failed_count.assert_called_once()
 
-    def test_process_items_do_not_send_message_if_status_is_error(self):
+    def test_process_items_does_not_increment_failed_count_other_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.increment_failed_count.assert_not_called()
+
+    def test_process_items_does_not_increment_failed_count_for_DL_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "DL"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.increment_failed_count.assert_not_called()
+
+    def test_process_items_does_not_send_message_for_fetch_error(self):
         self.mock_item.fetch_status_from_provider.return_value = "error"
         self.controller.process_items([self.mock_item])
         self.mock_messenger_instance.send_message.assert_not_called()
 
-    def test_process_items_sends_message_if_status_is_DL(self):
+    def test_process_items_does_not_send_message_for_other_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
+        self.controller.process_items([self.mock_item])
+        self.mock_messenger_instance.send_message.assert_not_called()
+
+    def test_process_items_sends_message_for_DL_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "DL"
         self.mock_item.phone = "+0123"
 
@@ -108,49 +123,26 @@ class ItemControllerTests(unittest.TestCase):
         self.mock_messenger_instance.send_message.assert_called_once_with(
             "your item is out for delivery now", self.mock_item.phone)
 
-    def test_process_items_does_not_send_message_if_status_is_other(self):
+    def test_process_items_does_not_set_delivered_field_for_error_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "error"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.set_is_delivered.assert_not_called()
+
+    def test_process_items_does_not_set_delivered_field_for_other_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "randomstring"
         self.controller.process_items([self.mock_item])
-        self.mock_messenger_instance.send_message.assert_not_called()
+        self.mock_item.set_is_delivered.assert_not_called()
 
-    def test_process_items_does_not_increment_failed_count_other_status(self):
-        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
-        self.controller.process_items([self.mock_item])
-        self.mock_item.increment_failed_count.assert_not_called()
-
-    def test_process_items_sets_item_to_inactive_in_sending_msg_for_DL(self):
+    def test_process_items_sets_delivered_field_for_DL_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "DL"
-        self.mock_item.is_active = "YES"
-
         self.controller.process_items([self.mock_item])
+        self.mock_item.set_is_delivered.assert_called_once()
 
-        self.mock_messenger_instance.send_message.assert_called()
-        self.assertEqual("NO", self.mock_item.is_active)
-
-    def test_process_items_does_not_set_item_to_inactive_in_other_status(self):
-        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
-        self.mock_item.is_active = "YES"
-
+    def test_process_sets_active_status(self):
         self.controller.process_items([self.mock_item])
-        self.assertEqual("YES", self.mock_item.is_active)
+        self.mock_item.set_active_status.assert_called()
 
-    def test_process_items_does_not_set_item_to_inactive_for_failed_count_4_(self):
-        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
-        self.mock_item.is_active = "YES"
-        self.mock_item.failed_count = 4
-
-        self.controller.process_items([self.mock_item])
-        self.assertEqual("YES", self.mock_item.is_active)
-
-    def test_process_items_sets_item_to_inactive_for_failed_count_5_(self):
-        self.mock_item.fetch_status_from_provider.return_value = "randomstring"
-        self.mock_item.is_active = "YES"
-        self.mock_item.failed_count = 5
-
-        self.controller.process_items([self.mock_item])
-        self.assertEqual("NO", self.mock_item.is_active)
-
-    def test_process_items_save_item_field_after_processing(self):
+    def test_process_items_saves_item_fields_in_processing(self):
         self.controller.process_items([self.mock_item])
         self.mock_item.save.assert_called_with(
             fields=["url", "token", "phone", "failed_count", "is_active"])

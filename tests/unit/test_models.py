@@ -27,6 +27,7 @@ class ItemTests(unittest.TestCase):
         self.assertEqual("+0123", self.item.phone)
         self.assertEqual(self.mock_db, self.item.db)
         self.assertEqual("YES", self.item.is_active)
+        self.assertEqual("NO", self.item.is_delivered)
         self.assertEqual(0, self.item.failed_count)
         self.assertTrue(uuid.UUID(str(self.item.id)))
 
@@ -91,3 +92,32 @@ class ItemTests(unittest.TestCase):
         self.item.increment_failed_count()
         self.item.increment_failed_count()
         self.assertEqual(2, self.item.failed_count)
+
+    def test_set_delivered(self):
+        self.assertEqual("NO", self.item.is_delivered)
+        self.item.set_is_delivered()
+        self.assertEqual("YES", self.item.is_delivered)
+
+    def test_set_active_status_for_delivered_no_and_failed_count_4(self):
+        self.item.is_delivered = "NO"
+        self.item.failed_count = 4
+        self.item.set_active_status()
+        self.assertEqual("YES", self.item.is_active)
+
+    def test_set_inactive_status_for_delivered_no_and_failed_count_5(self):
+        self.item.is_delivered = "NO"
+        self.item.failed_count = 5
+        self.item.set_active_status()
+        self.assertEqual("NO", self.item.is_active)
+
+    def test_set_inactive_status_for_delivered_yes_and_failed_count_4(self):
+        self.item.is_delivered = "YES"
+        self.item.failed_count = 4
+        self.item.set_active_status()
+        self.assertEqual("NO", self.item.is_active)
+
+    def test_set_inactive_status_for_delivered_yes_and_failed_count_5(self):
+        self.item.is_delivered = "YES"
+        self.item.failed_count = 5
+        self.item.set_active_status()
+        self.assertEqual("NO", self.item.is_active)

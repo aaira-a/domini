@@ -51,11 +51,9 @@ class ItemController(object):
                 if "DL" in status:
                     self.messenger.send_message(
                         "your item is out for delivery now", item.phone)
-                    item.is_active = "NO"
+                    item.set_is_delivered()
 
-                if item.is_active == "YES":
-                    if item.failed_count >= 5:
-                        item.is_active = "NO"
+                item.set_active_status()
 
                 item.save(fields=["url", "token", "phone",
                                   "failed_count", "is_active"])

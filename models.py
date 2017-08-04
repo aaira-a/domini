@@ -13,6 +13,7 @@ class Item(object):
         self.failed_count = failed_count
         self.id = id_
         self.db = db
+        self.is_delivered = "NO"
 
         if not is_existing:
             self.is_active = "YES"
@@ -40,3 +41,13 @@ class Item(object):
 
     def increment_failed_count(self):
         self.failed_count += 1
+
+    def set_is_delivered(self):
+        self.is_delivered = "YES"
+
+    def set_active_status(self):
+        if (
+            (self.is_delivered == "YES") or
+            (self.failed_count >= 5)
+        ):
+            self.is_active = "NO"
