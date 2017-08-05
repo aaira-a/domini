@@ -42,8 +42,8 @@ class ItemController(object):
                 return attribute["Value"]
 
     def process_items(self, items):
-        try:
-            for item in items:
+        for item in items:
+            try:
                 status = item.fetch_status_from_provider()
 
                 if "error" in status:
@@ -58,5 +58,5 @@ class ItemController(object):
                 item.save(fields=["url", "token", "phone",
                                   "failed_count", "is_active"])
 
-        except Exception:
-            pass
+            except Exception:
+                pass
