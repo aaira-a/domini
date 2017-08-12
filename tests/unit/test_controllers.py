@@ -4,6 +4,7 @@ from unittest.mock import patch
 import controllers
 
 from query_result_fixture import results as mock_results
+from query_no_result_fixture import results as mock_empty_results
 
 
 class ItemControllerTests(unittest.TestCase):
@@ -85,6 +86,11 @@ class ItemControllerTests(unittest.TestCase):
         self.assertEqual(expected_object_2.token, items[1].token)
         self.assertEqual(expected_object_2.phone, items[1].phone)
         self.assertEqual(expected_object_2.failed_count, items[1].failed_count)
+
+    def test_get_active_items_handles_empty_query_result(self):
+        self.mock_db_instance.query.return_value = mock_empty_results
+        items = self.controller.get_active_items()
+        self.assertEqual(0, len(items))
 
     def test_process_items_calls_models_fetch_method(self):
         self.controller.process_items([self.mock_item])

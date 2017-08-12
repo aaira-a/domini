@@ -19,6 +19,10 @@ class ItemController(object):
 
     def get_active_items(self):
         results = self.db.query("is_active", "YES")
+
+        if "Items" not in results:
+            return []
+
         items = []
         for result in results["Items"]:
             item = Item(
