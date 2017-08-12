@@ -34,12 +34,12 @@ def add_post():
 
 
 def scheduled():
-    mydatetime = datetime.datetime.utcnow()
-    mystring = (f"schedule triggered on {mydatetime}")
+    mystring = (f"schedule triggered on {datetime.datetime.utcnow()}")
     logger.info(mystring)
 
     controller = controllers.ItemController()
     items = controller.get_active_items()
+    logger.info(f"processing {len(items)} items")
     controller.process_items(items)
 
     return mystring

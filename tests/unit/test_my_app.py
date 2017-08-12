@@ -46,9 +46,9 @@ class ScheduledFunctionTests(unittest.TestCase):
         self.assertIn("schedule triggered on", scheduled())
 
     def test_scheduled_should_call_model_controller(self, mock_module):
-        mock_items = Mock()
+        mock_items = []
         mock_controller_instance = Mock()
-        mock_controller_instance.get_active_items.return_value = mock_items
+        mock_controller_instance.get_active_items.return_value = []
         mock_module.ItemController.return_value = mock_controller_instance
 
         scheduled()
