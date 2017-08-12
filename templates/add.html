@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+  <h2>Add item form</h2>
+  <form action="{{ url_for('add_post') }}" method="POST">
+    <dl>
+      <dt>url:
+      <dd><input type="text" name="url">
+      <dt>phone:
+      <dd><input type="text" name="phone">
+      <dt>token:
+      <dd><input type="text" name="token">
+      <dd><input type="submit" value="Add!">
+    </dl>
+  </form>
+{% endblock %}
