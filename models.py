@@ -51,3 +51,6 @@ class Item(object):
             (self.failed_count >= 5)
         ):
             self.is_active = "NO"
+
+        else:
+            self.is_active = "YES"
