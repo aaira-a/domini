@@ -65,8 +65,8 @@ jobs:
           name: populate environment variables from circleci envvar into zappa_settings
           command: |
             . venv/bin/activate
-            python envvar_helper.py dev AWS_ACCESS_KEY_ID $AWS_ACCESS_KEY_ID zappa_settings.json
-            python envvar_helper.py dev AWS_SECRET_ACCESS_KEY $AWS_SECRET_ACCESS_KEY zappa_settings.json
+            python envvar_helper.py dev MY_ACCESS_KEY_ID $MY_ACCESS_KEY_ID zappa_settings.json
+            python envvar_helper.py dev MY_SECRET_ACCESS_KEY $MY_SECRET_ACCESS_KEY zappa_settings.json
             python envvar_helper.py dev TWILIO_ACCOUNT_SID $TWILIO_ACCOUNT_SID zappa_settings.json
             python envvar_helper.py dev TWILIO_AUTH_TOKEN $TWILIO_AUTH_TOKEN zappa_settings.json
             python envvar_helper.py dev TWILIO_FROM_NUMBER $TWILIO_FROM_NUMBER zappa_settings.json

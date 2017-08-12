@@ -8,8 +8,8 @@ DOMAIN = "domini-items"
 class SimpleDB(object):
 
     def __init__(self, region='us-west-2',
-                 access_key=os.environ["AWS_ACCESS_KEY_ID"],
-                 secret_key=os.environ["AWS_SECRET_ACCESS_KEY"]):
+                 access_key=os.environ["MY_ACCESS_KEY_ID"],
+                 secret_key=os.environ["MY_SECRET_ACCESS_KEY"]):
         self.client = boto3.client(
             'sdb',
             aws_access_key_id=access_key,
