@@ -1,7 +1,12 @@
+import datetime
+import logging
 
 from flask import Flask, render_template, request
 
 import controllers
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 
@@ -26,6 +31,18 @@ def add_post():
 
     except Exception:
         return "failed :'("
+
+
+def scheduled():
+    mydatetime = datetime.datetime.utcnow()
+    mystring = (f"schedule triggered on {mydatetime}")
+    logger.info(mystring)
+
+    controller = controllers.ItemController()
+    items = controller.get_active_items()
+    controller.process_items(items)
+
+    return mystring
 
 
 if __name__ == "__main__":
