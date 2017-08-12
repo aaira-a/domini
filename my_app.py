@@ -12,8 +12,8 @@ def index():
 
 
 @app.route("/add-form", methods=["GET"])
-def add():
-    return render_template("add.html")
+def add_form():
+    return render_template("add_form.html")
 
 
 @app.route("/add-post", methods=["POST"])
