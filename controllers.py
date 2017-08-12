@@ -12,8 +12,8 @@ class ItemController(object):
         self.db.create_domain()
         self.messenger = messenger.TwilioClient()
 
-    def add(self, url, token):
-        item = Item(url, token, self.db)
+    def add(self, url, token, phone):
+        item = Item(url, token, phone, self.db)
         item.save(
             fields=["url", "token", "phone", "failed_count", "is_active"])
 

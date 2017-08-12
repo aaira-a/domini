@@ -36,10 +36,11 @@ class ItemControllerTests(unittest.TestCase):
     def test_add_item_saves_correct_fields_to_model(self, mock_Item):
         self.url = "https://abc/def/ghi?jkl=mno"
         self.token = "Bearer xyz"
+        self.phone = "+60123"
 
-        self.controller.add(self.url, self.token)
+        self.controller.add(self.url, self.token, self.phone)
 
-        mock_Item.assert_called_with(self.url, self.token,
+        mock_Item.assert_called_with(self.url, self.token, self.phone,
                                      self.mock_db_instance)
         mock_Item().save.assert_called_with(
             fields=["url", "token", "phone", "failed_count", "is_active"])
