@@ -1,0 +1,14 @@
+{
+    "dev": {
+        "events": [{
+            "function": "my_app.scheduled",
+            "expression": "rate(3 minutes)"
+        }],
+        "app_function": "my_app.app",
+        "aws_environment_variables": {
+        },
+        "aws_region": "us-west-2",
+        "keep_warm": false,
+        "s3_bucket": "azam-a-domini"
+    }
+}
