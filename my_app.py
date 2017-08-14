@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return "hello world"
+    return render_template("base.html", text_only="hello world")
 
 
 @app.route("/add-form", methods=["GET"])
@@ -27,10 +27,10 @@ def add_post():
         data = request.form
         controller = controllers.ItemController()
         controller.add(data["url"], data["token"], data["phone"])
-        return "great success!"
+        return render_template("base.html", text_only="great success!")
 
     except Exception:
-        return "failed :'("
+        return render_template("base.html", text_only="failed :'(")
 
 
 def scheduled():
