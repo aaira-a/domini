@@ -18,6 +18,37 @@
       <textarea name="token" class="form-control" rows="5" id="token" required 
         placeholder="Bearer xyz..." pattern="^Bearer \S*$"></textarea>
     </div>
-    <button type="submit" class="btn btn-default">Track!</button>
+
+    <div class="checkbox">
+      <script type="text/javascript">
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+      </script>
+
+      <style>
+        .tooltip-inner {
+          white-space: pre-wrap;
+          text-align: justify;
+        }
+      </style>
+      
+      <label>
+        <input type="checkbox" value="acceptTnC" required>
+        <a href="#" data-toggle="tooltip" 
+          title="Terms and Conditions: 
+
+By submitting the time-based session token, you are consenting that the token is to be used by this service for its intended purpose (tracking this single order). 
+          
+However you are aware that the token could also gives access to your other personal data stored in Domino's Pizza Malaysia, such as Full Name, Delivery Address(es), Phone Number(s), Email address, Coupon Codes, Order History, etc. 
+
+We are not liable for any damages caused by the misappropriate use of the token either by us or any third party.">
+          I agree to the terms and conditions
+        </a>
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Track!</button>
+
   </form>
 {% endblock %}
