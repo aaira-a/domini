@@ -17,12 +17,15 @@
 <title>Indominus Tex</title>
 <div class="jumbotron text-center">
   <h1>Indominus Tex</h1>
+    <a class="btn btn-primary" href="{{ url_for('index') }}" role="button">Home</a>
+    <a class="btn btn-danger" href="{{ url_for('how_to') }}" role="button">How-to</a>
+    <a class="btn btn-success" href="{{ url_for('add_form') }}" role="button">Track now!</a>
   <div class="container">
     {% if text_only is defined %}
       {{ text_only }}
-    {% else %}
-      {% block body %}
-      {% endblock %}
     {% endif %}
   </div>
 </div>
+
+{% block body %}
+{% endblock %}

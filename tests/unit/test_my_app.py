@@ -9,9 +9,13 @@ class AppTests(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
 
-    def test_index_view_should_return_hello_world(self):
+    def test_index_view_should_render_introduction_page(self):
         response = self.app.get("/")
-        self.assertIn(b"hello world", response.data.lower())
+        self.assertIn(b"what is this", response.data.lower())
+
+    def test_how_to_view_should_render_how_to_page(self):
+        response = self.app.get("/how-to")
+        self.assertIn(b"how-to", response.data.lower())
 
     def test_add_form_view_should_use_correct_template(self):
         response = self.app.get("/add-form")

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+  <h2>How-to</h2> <br> <br>
+
+  <ol>
+    <li>Login to Dominos Pizza Malaysia GPS Tracker.</li> <hr>
+
+    <li>Navigate until you can see your order with blinking current status: <br> <br>
+        <img class="img-responsive" 
+          src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/status.png">
+    </li> <hr>
+
+    <li>Open browser control (F12 on most browsers) and go to <mark>Network</mark> tab. Then click on any requests in the list that resembles the order cart id. After that click <mark>Headers</mark> to get the Authorization <mark>Bearer</mark> token: <br> <br>
+      <img class="img-responsive" 
+        src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/chrome-get-info.png">
+    </li> <hr>
+
+    <li>To get the order cart id url, right click on the request and copy the url: <br> <br>
+      <img class="img-responsive" 
+        src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/chrome-get-url.png">
+    </li> <hr>
+
+    <li>With the obtained <mark>order cart id url</mark> and Authorization <mark>Bearer</mark> token,
+      <a class="btn btn-success" href="{{ url_for('add_form') }}" role="button">Track now!</a>
+    </li> <hr>
+  </ol>
+</div>
+
+{% endblock %}

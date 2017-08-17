@@ -13,7 +13,12 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("base.html", text_only="hello world")
+    return render_template("intro.html")
+
+
+@app.route("/how-to", methods=["GET"])
+def how_to():
+    return render_template("how_to.html")
 
 
 @app.route("/add-form", methods=["GET"])

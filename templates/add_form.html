@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-  <h2>Track an order</h2>
+<div class="container">
+  <h2>Track an order</h2> <br>
   <form action="{{ url_for('add_post') }}" method="POST">
     <div class="form-group">
       <label for="url">URL:</label>
@@ -48,7 +49,8 @@ We are not liable for any damages caused by the misappropriate use of the token 
       </label>
     </div>
 
-    <button type="submit" class="btn btn-primary">Track!</button>
+    <button type="submit" class="btn btn-warning">Track!</button>
 
   </form>
+</div>
 {% endblock %}
