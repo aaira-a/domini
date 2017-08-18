@@ -11,18 +11,18 @@
           src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/status.png">
     </li> <hr>
 
-    <li>Open browser console (F12 on most browsers) and go to <mark>Network</mark> tab. Then click on any requests in the list that resembles the order cart id. After that click <mark>Headers</mark> to get the Authorization <mark>Bearer</mark> token: <br> <br>
+    <li>Open browser console (F12 on most browsers) and go to <mark>Network</mark> tab. If there is nothing listed in the <mark>Network</mark> tab, reload the page with the console open. Then click on any requests in the list that resembles the order cart id. After that, click <mark>Headers</mark> to get the Authorization <mark>Bearer</mark> token: <br> <br>
       <img class="img-responsive" 
         src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/chrome-get-info.png"> <br>
-    Make sure that the token is one single line with no line breaks. Edit in text editor if necessary to remove any line breaks and extra spaces. The expected format is <mark>Bearer xyz</mark>, with one space between <mark>Bearer</mark> and the actual token.
+    Make sure that the copied token is one single line with no line breaks. Edit in text editor if necessary to remove any line breaks and extra spaces. The expected format is <mark>Bearer xyz</mark>, with one space between <mark>Bearer</mark> and the actual token.
     </li> <hr>
 
-    <li>To get the order <mark>CartId</mark> url, right click on the request and copy the url: <br> <br>
+    <li>To get the order <mark>CartId</mark> URL, right click on the request and copy the URL: <br> <br>
       <img class="img-responsive" 
         src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/chrome-get-url.png">
     </li> <hr>
 
-    <li>With the obtained order <mark>CartId</mark> url and Authorization <mark>Bearer</mark> token,
+    <li>With the obtained order <mark>CartId</mark> URL and Authorization <mark>Bearer</mark> token,
       <a class="btn btn-success" href="{{ url_for('add_form') }}" role="button">Track now!</a>
     </li> <hr>
   </ol>
