@@ -52,7 +52,7 @@ class ItemController(object):
 
                 if "error" in status:
                     item.increment_failed_count()
-                if "DL" in status:
+                if status in ["DL", "CP"]:
                     self.messenger.send_message(
                         "your item is out for delivery now", item.phone)
                     item.set_is_delivered()

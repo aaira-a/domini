@@ -111,6 +111,11 @@ class ItemControllerTests(unittest.TestCase):
         self.controller.process_items([self.mock_item])
         self.mock_item.increment_failed_count.assert_not_called()
 
+    def test_process_items_does_not_increment_failed_count_for_CP_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "CP"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.increment_failed_count.assert_not_called()
+
     def test_process_items_does_not_send_message_for_fetch_error(self):
         self.mock_item.fetch_status_from_provider.return_value = "error"
         self.controller.process_items([self.mock_item])
@@ -130,6 +135,15 @@ class ItemControllerTests(unittest.TestCase):
         self.mock_messenger_instance.send_message.assert_called_once_with(
             "your item is out for delivery now", self.mock_item.phone)
 
+    def test_process_items_sends_message_for_CP_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "CP"
+        self.mock_item.phone = "+0123"
+
+        self.controller.process_items([self.mock_item])
+
+        self.mock_messenger_instance.send_message.assert_called_once_with(
+            "your item is out for delivery now", self.mock_item.phone)
+
     def test_process_items_does_not_set_delivered_field_for_error_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "error"
         self.controller.process_items([self.mock_item])
@@ -142,6 +156,11 @@ class ItemControllerTests(unittest.TestCase):
 
     def test_process_items_sets_delivered_field_for_DL_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "DL"
+        self.controller.process_items([self.mock_item])
+        self.mock_item.set_is_delivered.assert_called_once()
+
+    def test_process_items_sets_delivered_field_for_CP_status(self):
+        self.mock_item.fetch_status_from_provider.return_value = "CP"
         self.controller.process_items([self.mock_item])
         self.mock_item.set_is_delivered.assert_called_once()
 
