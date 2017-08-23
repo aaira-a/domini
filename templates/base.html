@@ -20,9 +20,15 @@
   crossorigin="anonymous">
 </script>
 
+<style>
+  html {
+    overflow-y: scroll;
+  }
+</style>
+
 <title>Indominus Tex</title>
 <div class="jumbotron text-center">
-  <img src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/logo_transparent_background.png" 
+  <img src="https://s3-us-west-2.amazonaws.com/static.indominus-tex.sidebox.es/logo_transparent_background_small.png" 
     alt="Logo" height="200"> <br>
     <a class="btn btn-primary" href="{{ url_for('index') }}" role="button">Home</a>
     <a class="btn btn-danger" href="{{ url_for('how_to') }}" role="button">How-to</a>
