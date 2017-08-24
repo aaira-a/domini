@@ -54,7 +54,8 @@ class ItemController(object):
                     item.increment_failed_count()
                 if status in ["DL", "CP"]:
                     self.messenger.send_message(
-                        "your item is out for delivery now", item.phone)
+                        "[Indominus Tex] Your item is out for delivery now",
+                        item.phone)
                     item.set_is_delivered()
 
                 item.set_active_status()

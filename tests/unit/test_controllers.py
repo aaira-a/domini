@@ -133,7 +133,8 @@ class ItemControllerTests(unittest.TestCase):
         self.controller.process_items([self.mock_item])
 
         self.mock_messenger_instance.send_message.assert_called_once_with(
-            "your item is out for delivery now", self.mock_item.phone)
+            "[Indominus Tex] Your item is out for delivery now",
+            self.mock_item.phone)
 
     def test_process_items_sends_message_for_CP_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "CP"
@@ -142,7 +143,8 @@ class ItemControllerTests(unittest.TestCase):
         self.controller.process_items([self.mock_item])
 
         self.mock_messenger_instance.send_message.assert_called_once_with(
-            "your item is out for delivery now", self.mock_item.phone)
+            "[Indominus Tex] Your item is out for delivery now",
+            self.mock_item.phone)
 
     def test_process_items_does_not_set_delivered_field_for_error_status(self):
         self.mock_item.fetch_status_from_provider.return_value = "error"
