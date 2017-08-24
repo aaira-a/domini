@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 
 from flask import Flask, render_template, request
 
@@ -9,6 +10,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
+app.config["GA_TRACKING_ID"] = os.environ["GA_TRACKING_ID"]
 
 
 @app.route("/", methods=["GET"])

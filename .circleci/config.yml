@@ -76,6 +76,7 @@ jobs:
             python envvar_helper.py dev TWILIO_ACCOUNT_SID $TWILIO_ACCOUNT_SID zappa_settings.json
             python envvar_helper.py dev TWILIO_AUTH_TOKEN $TWILIO_AUTH_TOKEN zappa_settings.json
             python envvar_helper.py dev TWILIO_FROM_NUMBER $TWILIO_FROM_NUMBER zappa_settings.json
+            python envvar_helper.py dev GA_TRACKING_ID $GA_TRACKING_ID zappa_settings.json
 
       - run:
           name: deploy to aws using zappa (update existing)
