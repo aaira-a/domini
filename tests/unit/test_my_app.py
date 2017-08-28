@@ -8,6 +8,8 @@ class AppTests(unittest.TestCase):
 
     def setUp(self):
         self.app = app.test_client()
+        self.valid_url = "https://api.dominos.com.my/api/GPSTracker/CartId/8"
+        self.invalid_url = "https://api.unknown.domain/api/GPSTracker/CartId/9"
 
     def test_index_view_should_render_introduction_page(self):
         response = self.app.get("/")
@@ -23,23 +25,35 @@ class AppTests(unittest.TestCase):
 
     @patch('my_app.controllers')
     def test_add_post_view_should_call_model_controller(self, mock_module):
-        data = {"url": "myurl1", "phone": "+60123", "token": "mytoken1"}
+        data = {"url": self.valid_url, "phone": "+60123", "token": "mytoken1"}
 
         self.app.post("/add-post", data=data)
 
         mock_module.ItemController.assert_called()
         mock_module.ItemController().add.assert_called_with(
-            "myurl1", "mytoken1", "+60123")
+            self.valid_url, "mytoken1", "+60123")
 
     @patch('my_app.controllers')
     def test_add_post_view_should_return_success_message(self, mock_module):
-        data = {"url": "myurl1", "phone": "+60123", "token": "mytoken1"}
+        data = {"url": self.valid_url, "phone": "+60123", "token": "mytoken1"}
         response = self.app.post("/add-post", data=data)
         self.assertIn(b"great success!", response.data.lower())
 
     @patch('my_app.controllers')
     def test_add_post_view_should_return_failed_message(self, mock_module):
         response = self.app.post("/add-post", data={})
+        self.assertIn(b"failed", response.data.lower())
+
+    @patch('my_app.controllers')
+    def test_add_post_view_should_accept_valid_url_pattern(self, mock_module):
+        data = {"url": self.valid_url, "phone": "+60123", "token": "mytoken1"}
+        response = self.app.post("/add-post", data=data)
+        self.assertIn(b"great success!", response.data.lower())
+
+    @patch('my_app.controllers')
+    def test_add_post_view_should_fail_invalid_url_pattern(self, mock_module):
+        data = {"url": self.invalid_url, "phone": "+60123", "token": "mytoken1"}
+        response = self.app.post("/add-post", data=data)
         self.assertIn(b"failed", response.data.lower())
 
 
