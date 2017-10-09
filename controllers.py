@@ -9,7 +9,7 @@ class ItemController(object):
 
     def __init__(self, db=db, messenger=messaging):
         self.db = db.SimpleDB()
-        self.db.create_domain()
+        self.db.get_or_create_domain()
         self.messenger = messenger.TwilioClient()
 
     def add(self, url, token, phone):

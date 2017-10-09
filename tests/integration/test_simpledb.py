@@ -1,6 +1,7 @@
 from deepdiff import DeepDiff
 import os
 import unittest
+from unittest.mock import Mock
 import uuid
 
 from simpledb import SimpleDB
@@ -70,3 +71,25 @@ class SimpleDBIntegrationTests(unittest.TestCase):
 
         response = self.sdb.query("attribute1name", "attribute1value1", self.domain)
         self.assertEqual(2, len(response["Items"]))
+
+    def test_get_or_create_domain_use_existing_if_already_exist(self):
+        temporary_function = self.sdb.client.create_domain
+        self.sdb.client.create_domain = Mock()
+        
+        self.sdb.get_or_create_domain(self.domain)
+        
+        self.sdb.client.create_domain.assert_not_called()
+        self.sdb.client.create_domain = temporary_function
+
+    def test_get_or_create_domain_creates_new_if_doesnt_exist(self):
+        nonexist_domain = str(uuid.uuid4())
+        domains = self.sdb.list_domains()
+        self.assertNotIn(nonexist_domain, str(domains))
+
+        self.sdb.get_or_create_domain(nonexist_domain)
+        domains_recheck_1 = self.sdb.list_domains()
+        self.assertIn(nonexist_domain, str(domains_recheck_1))
+
+        self.sdb.delete_domain(nonexist_domain)
+        domains_recheck_2 = self.sdb.list_domains()
+        self.assertNotIn(nonexist_domain, str(domains_recheck_2))

@@ -17,6 +17,12 @@ class SimpleDB(object):
             region_name=region
         )
 
+    def get_or_create_domain(self, domain_name=DOMAIN):
+        domains = self.client.list_domains()
+        if domain_name not in domains['DomainNames']:
+            self.create_domain(domain_name)
+        return domains
+
     def create_domain(self, domain_name=DOMAIN):
         return self.client.create_domain(
             DomainName=domain_name

@@ -26,7 +26,7 @@ class ItemControllerTests(unittest.TestCase):
     def test_controller_init_should_instantiate_db(self):
         self.mock_db_module.SimpleDB.assert_called_once()
         self.assertEqual(self.controller.db, self.mock_db_instance)
-        self.mock_db_instance.create_domain.assert_called_once()
+        self.mock_db_instance.get_or_create_domain.assert_called_once()
 
     def test_controller_init_should_instantiate_messenger(self):
         self.mock_messenger_module.TwilioClient.assert_called_once()
